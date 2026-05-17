@@ -1,0 +1,22 @@
+FROM php:8.5-fpm-alpine
+
+RUN apk add --no-cache \
+    postgresql-dev \
+    libpng-dev \
+    libzip-dev \
+    libjpeg-turbo-dev \ 
+    zip unzip git curl
+
+RUN docker-php-ext-configure gd --with-jpeg && \
+    docker-php-ext-install \
+    pdo pdo_pgsql pgsql gd zip bcmath exif
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+# Cukup install dulu, kode di-mount via volume
+COPY composer.json composer.lock ./
+RUN composer install --no-scripts --no-interaction
+
+EXPOSE 8000

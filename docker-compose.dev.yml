@@ -1,0 +1,69 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: laravel_app_dev
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    volumes:
+      - .:/var/www                  # live reload — kode langsung sync
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=biblio
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: laravel_db_dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: biblio
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"               # expose ke host buat akses via DBeaver/psql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d biblio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  minio:
+    image: minio/minio
+    container_name: laravel_minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    networks:
+      - app-network 
+
+volumes:
+  pgdata_dev:
+  minio_data:
+
+networks:
+  app-network:
+    driver: bridge
