@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\Book;
+use Illuminate\Support\Facades\URL;
 use App\Observers\BookObserver;
 
 class AppServiceProvider extends ServiceProvider
