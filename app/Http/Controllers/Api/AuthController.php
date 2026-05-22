@@ -7,58 +7,142 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Kreait\Laravel\Firebase\Facades\Firebase;
+use OpenApi\Attributes as OA;
 
+#[OA\Info(title: "Biblio API", version: "1.0.0", description: "API untuk Biblio")]
+#[OA\SecurityScheme(securityScheme: "sanctum", type: "http", scheme: "bearer")]
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+    // public function register(Request $request)
+    // {
+    //     $request->validate([
+    //         'name'     => 'required|string|max:255',
+    //         'email'    => 'required|email|unique:users,email',
+    //         'password' => 'required|string|min:8|confirmed',
+    //     ]);
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    //     $user = User::create([
+    //         'name'     => $request->name,
+    //         'email'    => $request->email,
+    //         'password' => Hash::make($request->password),
+    //     ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+    //     $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'user'  => $user,
-            'token' => $token,
-        ], 201);
-    }
+    //     return response()->json([
+    //         'user'  => $user,
+    //         'token' => $token,
+    //     ], 201);
+    // }
 
+    # ---
+    #[OA\Post(
+    path: "/auth/login",
+    summary: "Login admin",
+    tags: ["Auth"],
+    requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(
+    required: ["email", "password"],
+    properties: [
+    new OA\Property(property: "email", type: "string", example: "admin@biblio.com"),
+    new OA\Property(property: "password", type: "string", example: "password"),
+    ]
+    )),
+    responses: [
+    new OA\Response(response: 200, description: "Login berhasil"),
+    new OA\Response(response: 422, description: "Credentials tidak valid"),
+    ]
+    )]
+    # ---
     public function login(Request $request)
     {
         $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
+        'email'    => 'required|email',
+        'password' => 'required',
         ]);
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Credentials tidak valid.'],
+            'email' => ['Credentials tidak valid.'],
             ]);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user'  => $user,
-            'token' => $token,
+        'user'  => $user,
+        'token' => $token,
         ]);
     }
+    
+    # ---
+    #[OA\Post(
+    path: "/auth/firebase",
+    summary: "Login user via Firebase token",
+    tags: ["Auth"],
+    requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(
+    required: ["token"],
+    properties: [
+    new OA\Property(property: "token", type: "string", example: "firebase-id-token"),
+    ]
+    )),
+    responses: [
+    new OA\Response(response: 200, description: "Login berhasil"),
+    new OA\Response(response: 401, description: "Token tidak valid"),
+    ]
+    )]
+    # ---
+    public function firebaseLogin(Request $request)
+    {
+        $request->validate([
+        'token' => 'required|string',
+        ]);
+        
+        try {
+            $verifiedToken = Firebase::auth()->verifyIdToken($request->token);
+            $uid           = $verifiedToken->claims()->get('sub');
+            $email         = $verifiedToken->claims()->get('email');
+            $name          = $verifiedToken->claims()->get('name') ?? 'User';
+            
+            $user = User::firstOrCreate(
+            ['email' => $email],
+            [
+            'name'     => $name,
+            'password' => bcrypt(str()->random(32)), // random, tidak dipakai
+            'role'     => 'user',
+            ]
+            );
+            
+            $token = $user->createToken('firebase')->plainTextToken;
+            
+            return response()->json([
+            'user'  => $user,
+            'token' => $token,
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Token tidak valid'], 401);
+        }
+    }
 
+    # ---
+    #[OA\Post(
+    path: "/auth/logout",
+    summary: "Logout",
+    security: [["sanctum" => []]],
+    tags: ["Auth"],
+    responses: [
+    new OA\Response(response: 200, description: "Logged out"),
+    new OA\Response(response: 401, description: "Unauthenticated"),
+    ]
+    )]
+    # ---
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out'], 200);
+        return response()->json(['message' => 'logged_out'], 200);
     }
 }

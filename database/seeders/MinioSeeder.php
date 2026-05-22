@@ -11,7 +11,7 @@ class MinioSeeder extends Seeder
         $client = new S3Client([
             'version'  => 'latest',
             'region'   => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'endpoint' => env('AWS_ENDPOINT'),
+            'endpoint' => env('AWS_ENDPOINT_INTERNAL'),
             'use_path_style_endpoint' => true,
             'credentials' => [
                 'key'    => env('AWS_ACCESS_KEY_ID'),
