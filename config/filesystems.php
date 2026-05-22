@@ -55,7 +55,7 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT_INTERNAL'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
             'report' => false,
         ],
@@ -68,7 +68,7 @@ return [
             'bucket'                  => 'biblio-covers',
             'endpoint'                => env('AWS_ENDPOINT_INTERNAL'),
             'use_path_style_endpoint' => true,
-            'url'                     => env('AWS_COVERS_URL', env('AWS_ENDPOINT').'/biblio-covers'),
+            'url'                     => env('AWS_COVERS_URL'),
         ],
 
     ],
