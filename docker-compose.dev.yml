@@ -3,12 +3,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: laravel_app_dev
+    container_name: biblio_app_dev
     restart: unless-stopped
     working_dir: /var/www
     command: php artisan serve --host=0.0.0.0 --port=8000
     volumes:
-      - .:/var/www                  # live reload — kode langsung sync
+      - .:/var/www:Z                  # live reload — kode langsung sync
     ports:
       - "8000:8000"
     environment:
@@ -27,7 +27,7 @@ services:
 
   db:
     image: postgres:16-alpine
-    container_name: laravel_db_dev
+    container_name: biblio_db_dev
     restart: unless-stopped
     environment:
       POSTGRES_DB: biblio
@@ -45,9 +45,15 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:alpine
+    container_name: biblio_redis
+    networks:
+      - app-network
+
   minio:
     image: minio/minio
-    container_name: laravel_minio
+    container_name: biblio_minio
     command: server /data --console-address ":9001"
     ports:
       - "9000:9000"   # S3 API
