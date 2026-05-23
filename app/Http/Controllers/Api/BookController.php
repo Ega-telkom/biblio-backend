@@ -32,12 +32,6 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::with('genre')->paginate(15);
-        $books->through(function ($book) {
-            $book->cover_url = $book->cover_url
-            ? Storage::disk('covers')->url($book->cover_url)
-            : null;
-            return $book;
-        });
         return response()->json($books);
     }
 
@@ -116,10 +110,8 @@ class BookController extends Controller
     # ---
     public function show(Book $book)
     {
-        $book->cover_url = $book->cover_url
-        ? Storage::disk('covers')->url($book->cover_url)
-        : null;
-        return response()->json($book->load('genre'));
+        $books = Book::with('genre')->paginate(15);
+        return response()->json($books);
     }
 
     # ---
@@ -160,6 +152,7 @@ class BookController extends Controller
         
         if ($request->hasFile('cover')) {
             if ($book->cover_url) {
+                Storage::disk('s3')->delete($book->cover_url);
                 Storage::disk('covers')->delete($book->cover_url);
             }
             $coverUrl = $this->uploadCover($request->file('cover'), $book->id);
@@ -218,7 +211,7 @@ class BookController extends Controller
             return response()->json(['message' => 'File not found'], 404);
         }
         
-        $url = Storage::disk('s3')->temporaryUrl(
+        $url = Storage::disk('s3_public')->temporaryUrl(
         $book->file_path,
         now()->addMinutes(5)
         );
@@ -271,13 +264,7 @@ class BookController extends Controller
     # ---
     public function byGenre(Genre $genre)
     {
-        $books = $genre->books()->paginate(15);
-        $books->through(function ($book) {
-            $book->cover_url = $book->cover_url
-            ? Storage::disk('covers')->url($book->cover_url)
-            : null;
-            return $book;
-        });
+        $books = Book::with('genre')->paginate(15);
         return response()->json($books);
     }
 }

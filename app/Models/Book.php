@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -51,6 +52,7 @@ class Book extends Model
 
     protected $keyType = 'string';
     protected $hidden = ['file_path'];
+    protected $appends = ['cover_sm', 'cover_md', 'cover_lg'];
     public $incrementing = false;
     
     protected static function boot(): void
@@ -80,5 +82,23 @@ class Book extends Model
     public function genre()
     {
         return $this->belongsTo(Genre::class);
+    }
+    
+    public function getCoverSmAttribute(): ?string
+    {
+        if (!$this->id) return null;
+        return Storage::disk('covers')->url("{$this->id}/cover_sm.jpg");
+    }
+    
+    public function getCoverMdAttribute(): ?string
+    {
+        if (!$this->id) return null;
+        return Storage::disk('covers')->url("{$this->id}/cover_md.jpg");
+    }
+    
+    public function getCoverLgAttribute(): ?string
+    {
+        if (!$this->id) return null;
+        return Storage::disk('covers')->url("{$this->id}/cover_lg.jpg");
     }
 }
