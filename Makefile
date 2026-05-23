@@ -1,4 +1,4 @@
-.PHONY: dev dev-build dev-rebuild dev-down prod prod-build prod-down prod-migrate migrate fresh seed cache shell logs down restart
+.PHONY: dev dev-build dev-rebuild dev-down prod prod-build prod-down prod-migrate migrate fresh seed cache shell shell-prod logs down restart
 
 # ─── Auto-detect podman / docker ───────────────────────────
 DOCKER  := $(shell command -v podman 2>/dev/null || command -v docker)
@@ -53,6 +53,9 @@ cache:
 # ─── Utilities ─────────────────────────────────────────────
 shell:
 	$(COMPOSE) -f $(DEV_FILE) exec app sh
+
+shell-prod:
+	$(COMPOSE) -f $(PROD_FILE) exec app sh
 
 logs:
 	$(COMPOSE) -f $(DEV_FILE) logs -f app
