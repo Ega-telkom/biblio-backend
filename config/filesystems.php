@@ -48,16 +48,15 @@ return [
         ],
 
         's3' => [
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_ENDPOINT'),
-            'endpoint' => env('AWS_ENDPOINT_INTERNAL'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
-            'throw' => false,
-            'report' => false,
+            'driver'                  => 's3',
+            'key'                     => env('AWS_ACCESS_KEY_ID'),
+            'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
+            'region'                  => env('AWS_DEFAULT_REGION'),
+            'bucket'                  => env('AWS_BUCKET'),
+            'endpoint'                => env('AWS_ENDPOINT'),     // http://minio:9000
+            'url'                     => env('AWS_URL'),          // https://biblio-cdn.duckdns.org/biblio (opsional)
+            'use_path_style_endpoint' => true,
+            'throw'                   => true,                    // ganti false → true biar error ketahuan
         ],
         
         'covers' => [
@@ -66,9 +65,10 @@ return [
             'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
             'region'                  => env('AWS_DEFAULT_REGION'),
             'bucket'                  => 'biblio-covers',
-            'endpoint'                => env('AWS_ENDPOINT_INTERNAL'),
+            'endpoint'                => env('AWS_ENDPOINT'),     // http://minio:9000
+            'url'                     => env('AWS_COVERS_URL'),   // https://biblio-cdn.duckdns.org/biblio-covers
             'use_path_style_endpoint' => true,
-            'url'                     => env('AWS_COVERS_URL'),
+            'throw'                   => true,
         ],
 
     ],
