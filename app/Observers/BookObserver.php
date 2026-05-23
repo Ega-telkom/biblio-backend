@@ -32,4 +32,13 @@ class BookObserver
             Storage::disk('covers')->put("{$book->id}/cover_{$label}.jpg", (string) $image);
         }
     }
+    
+    public function deleted(Book $book): void
+    {
+        // Hapus semua file buku
+        Storage::disk('s3')->deleteDirectory("books/{$book->id}");
+        
+        // Hapus semua cover
+        Storage::disk('covers')->deleteDirectory("{$book->id}");
+    }
 }
