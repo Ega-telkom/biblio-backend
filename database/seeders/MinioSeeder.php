@@ -18,14 +18,17 @@ class MinioSeeder extends Seeder
                 'secret' => env('AWS_SECRET_ACCESS_KEY'),
             ],
         ]);
-    
+
         // Bucket private untuk file buku
-        if (!$client->doesBucketExist('biblio')) {
+        try {
             $client->createBucket(['Bucket' => 'biblio']);
+            $this->command->info('Bucket biblio created');
+        } catch (\Exception $e) {
+            $this->command->warn('biblio: ' . $e->getMessage());
         }
-    
-        // Bucket public untuk cover
-        if (!$client->doesBucketExist('biblio-covers')) {
+
+
+        try {
             $client->createBucket(['Bucket' => 'biblio-covers']);
             $client->putBucketPolicy([
                 'Bucket' => 'biblio-covers',
@@ -39,6 +42,9 @@ class MinioSeeder extends Seeder
                     ]],
                 ]),
             ]);
+            $this->command->info('Bucket biblio-covers created');
+        } catch (\Exception $e) {
+            $this->command->warn('biblio-covers: ' . $e->getMessage());
         }
     }
 }
