@@ -30,13 +30,17 @@ class BookForm
             TextInput::make('page_count')->numeric(),
             TextInput::make('price')->required()->numeric()->prefix('Rp'),
             FileUpload::make('cover_url')
-                ->disk('public')
-                ->directory('temp-covers')
+                ->disk('covers')                    // langsung ke MinIO bucket biblio-covers
+                ->directory(fn ($record) => $record?->id ?? 'temp')
                 ->image()
+                ->imageResizeTargetWidth(400)       // Filament handle resize
+                ->imageResizeUpscale(false)
+                ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                 ->label('Cover Buku'),
+            
             FileUpload::make('file_path')
-                ->disk('public')
-                ->directory('temp-buku')
+                ->disk('s3')                        // langsung ke MinIO bucket biblio-books
+                ->directory(fn ($record) => "books/{$record?->id}")
                 ->acceptedFileTypes(['application/pdf', 'application/epub+zip'])
                 ->label('File Buku'),
         ]);

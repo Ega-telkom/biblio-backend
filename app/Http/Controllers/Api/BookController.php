@@ -160,7 +160,7 @@ class BookController extends Controller
         
         if ($request->hasFile('cover')) {
             if ($book->cover_url) {
-                Storage::disk('s3')->delete($book->cover_url);
+                Storage::disk('covers')->delete($book->cover_url);
             }
             $coverUrl = $this->uploadCover($request->file('cover'), $book->id);
         }
