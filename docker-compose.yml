@@ -8,7 +8,7 @@ services:
     env_file:
       - .env.production
     ports:
-      - "127.0.0.1:9000:9000" # Hanya terbuka untuk localhost agar aman dari luar
+      - "127.0.0.1:9080:9000" # Hanya terbuka untuk localhost agar aman dari luar
     volumes:
       # Volume untuk membagikan asset Laravel ke Nginx Host
       - /var/www/biblio-backend/public:/var/www/public
