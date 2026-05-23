@@ -58,6 +58,16 @@ return [
             'use_path_style_endpoint' => true,
             'throw'                   => true,                    // ganti false → true biar error ketahuan
         ],
+
+        's3_public' => [
+            'driver' => 's3',
+            'key'    => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+            'endpoint' => 'https://biblio-cdn.duckdns.org',  // public
+            'use_path_style_endpoint' => true,
+        ],
         
         'covers' => [
             'driver'                  => 's3',
