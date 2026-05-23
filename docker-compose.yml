@@ -60,7 +60,8 @@ services:
     restart: unless-stopped
     command: server /data --console-address ":9001"
     ports:
-      - "127.0.0.1:9001:9001" # Bind ke 127.0.0.1 agar konsol MinIO aman di balik proxy host nanti
+        - "127.0.0.1:9000:9000" # <--- WAJIB: Buka port API untuk disikat oleh Nginx Proxy
+        - "127.0.0.1:9001:9001" # Ini port Console Dashboard (Aman di-bind ke lokal)
     environment:
       MINIO_ROOT_USER: SOMEPASSWORD
       MINIO_ROOT_PASSWORD: SOMEPASSWORD
