@@ -10,25 +10,41 @@ class CreateBook extends CreateRecord
 {
     protected static string $resource = BookResource::class;
 
-    protected function afterCreate(): void
+    protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $record = $this->record;
-
-        if ($record->cover_url && !str_starts_with($record->cover_url, $record->id)) {
-            Storage::disk('covers')->move(
-                $record->cover_url,
-                "{$record->id}/cover.jpg"
-            );
-            $record->updateQuietly(['cover_url' => "{$record->id}/cover.jpg"]);
+        // 1. Proses Pemindahan COVER BUKU
+        if (!empty($data['cover_url'])) {
+            $localCoverPath = $data['cover_url']; // contoh: temp-covers/xyz.jpg
+            
+            if (Storage::disk('public')->exists($localCoverPath)) {
+                // Ambil file dari lokal
+                $fileContent = Storage::disk('public')->get($localCoverPath);
+                
+                // Lempar ke MinIO disk 'covers'
+                Storage::disk('covers')->put($localCoverPath, $fileContent);
+                
+                // Hapus file temporary di lokal server
+                Storage::disk('public')->delete($localCoverPath);
+            }
         }
 
-        if ($record->file_path && !str_starts_with($record->file_path, "books/{$record->id}")) {
-            $ext = pathinfo($record->file_path, PATHINFO_EXTENSION);
-            Storage::disk('s3')->move(
-                $record->file_path,
-                "books/{$record->id}/file.{$ext}"
-            );
-            $record->updateQuietly(['file_path' => "books/{$record->id}/file.{$ext}"]);
+        // 2. Proses Pemindahan FILE BUKU (PDF/EPUB)
+        if (!empty($data['file_path'])) {
+            $localBookPath = $data['file_path']; // contoh: temp-buku/xyz.pdf
+            
+            if (Storage::disk('public')->exists($localBookPath)) {
+                // Ambil file dari lokal
+                $fileContent = Storage::disk('public')->get($localBookPath);
+                
+                // Lempar ke MinIO disk 's3' (bucket privat)
+                Storage::disk('s3')->put($localBookPath, $fileContent);
+                
+                // Hapus file temporary di lokal server
+                Storage::disk('public')->delete($localBookPath);
+            }
         }
+
+        // Kembalikan data yang sudah bersih untuk disimpan di DB
+        return $data;
     }
 }

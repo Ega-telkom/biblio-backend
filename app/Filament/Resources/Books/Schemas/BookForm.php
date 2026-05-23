@@ -30,11 +30,13 @@ class BookForm
             TextInput::make('page_count')->numeric(),
             TextInput::make('price')->required()->numeric()->prefix('Rp'),
             FileUpload::make('cover_url')
-                ->disk('covers')
+                ->disk('public')
+                ->directory('temp-covers')
                 ->image()
                 ->label('Cover Buku'),
             FileUpload::make('file_path')
-                ->disk('s3')
+                ->disk('public')
+                ->directory('temp-buku')
                 ->acceptedFileTypes(['application/pdf', 'application/epub+zip'])
                 ->label('File Buku'),
         ]);
