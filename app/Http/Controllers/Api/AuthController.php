@@ -37,45 +37,49 @@ class AuthController extends Controller
     // }
 
     # ---
-    #[OA\Post(
-    path: "/auth/login",
-    summary: "Login admin",
-    tags: ["Auth"],
-    requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(
-    required: ["email", "password"],
-    properties: [
-    new OA\Property(property: "email", type: "string", example: "admin@biblio.com"),
-    new OA\Property(property: "password", type: "string", example: "password"),
-    ]
-    )),
-    responses: [
-    new OA\Response(response: 200, description: "Login berhasil"),
-    new OA\Response(response: 422, description: "Credentials tidak valid"),
-    ]
-    )]
-    # ---
-    public function login(Request $request)
-    {
-        $request->validate([
-        'email'    => 'required|email',
-        'password' => 'required',
-        ]);
+    // #[OA\Post(
+    // path: "/auth/login",
+    // operationId: "authLogin",
+    // summary: "Login admin",
+    // tags: ["Auth"],
+    // requestBody: new OA\RequestBody(
+    //     required: true,
+    //     content: new OA\JsonContent(ref: "#/components/schemas/LoginRequest")
+    // ),
+    // responses: [
+    //     new OA\Response(
+    //         response: 200,
+    //         description: "Login berhasil",
+    //         content: new OA\JsonContent(ref: "#/components/schemas/UserCredentialsResponse")
+    //     ),
+    //     new OA\Response(response: 422, 
+    //         description: "Credentials tidak valid",
+    //         content: new OA\JsonContent(ref: "#/components/schemas/ValidationErrorResponse")
+    //     ),
+    // ])]
+    // # ---
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'email'    => 'required|email',
+    //         'password' => 'required',
+    //     ]);
 
-        $user = User::where('email', $request->email)->first();
+    //     $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-            'email' => ['Credentials tidak valid.'],
-            ]);
-        }
+    //     if (!$user || !Hash::check($request->password, $user->password)) {
+    //             throw ValidationException::withMessages([
+    //             'email' => ['Credentials tidak valid.'],
+    //         ]);
+    //     }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+    //     $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-        'user'  => $user,
-        'token' => $token,
-        ]);
-    }
+    //     return response()->json([
+    //         'user'  => $user,
+    //         'token' => $token,
+    //     ]);
+    // }
     
     # ---
     #[OA\Post(
