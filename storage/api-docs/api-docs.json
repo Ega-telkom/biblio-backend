@@ -110,6 +110,94 @@
                 ]
             }
         },
+        "/profile/avatar": {
+            "post": {
+                "tags": [
+                    "Avatar"
+                ],
+                "summary": "Upload avatar user",
+                "operationId": "4885f8274acccf0dcd7017c62b0c1658",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "avatar"
+                                ],
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "avatar": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Avatar"
+                ],
+                "summary": "Hapus avatar user",
+                "operationId": "bb2851adbccf467612e0cff624732332",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/books": {
             "get": {
                 "tags": [
@@ -954,6 +1042,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Avatar",
+            "description": "Avatar"
         },
         {
             "name": "Books",

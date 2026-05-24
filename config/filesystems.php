@@ -80,6 +80,18 @@ return [
             'use_path_style_endpoint' => true,
             'throw'                   => true,
         ],
+        
+        'avatars' => [
+            'driver'                  => 's3',
+            'key'                     => env('AWS_ACCESS_KEY_ID'),
+            'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
+            'region'                  => env('AWS_DEFAULT_REGION'),
+            'bucket'                  => 'biblio-avatars',
+            'endpoint'                => env('AWS_ENDPOINT'),
+            'url'                     => env('AWS_AVATAR_URL'),
+            'use_path_style_endpoint' => true,
+            'throw'                   => true,
+        ],
 
     ],
 
