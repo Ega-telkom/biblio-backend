@@ -37,7 +37,7 @@ class AvatarController extends Controller
     public function uploadAvatar(Request $request)
     {
         $request->validate([
-        'avatar' => ['required', 'image', 'max:5120'],
+            'avatar' => ['required', 'image', 'max:5120'],
         ]);
 
         $user = $request->user();
@@ -48,8 +48,8 @@ class AvatarController extends Controller
 
         $manager = new ImageManager(new Driver());
         $image = $manager->decode($request->file('avatar')->getPathname())
-        ->coverDown(200, 200)
-        ->encodeUsingFileExtension('jpg', quality: 80);
+            ->coverDown(200, 200)
+            ->encodeUsingFileExtension('jpg', quality: 80);
 
         $path = "{$user->id}/avatar.jpg";
         Storage::disk('avatars')->put($path, (string) $image);
@@ -82,6 +82,6 @@ class AvatarController extends Controller
             $user->update(['avatar_url' => null]);
         }
 
-        return response()->json(['message' => 'Avatar deleted']);
+        return response()->json(['message' => 'avatar_deleted']);
     }
 }
