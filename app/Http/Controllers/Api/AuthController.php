@@ -84,19 +84,24 @@ class AuthController extends Controller
     # ---
     #[OA\Post(
     path: "/auth/firebase",
+    operationId: "authFirebase",
     summary: "Login user via Firebase token",
     tags: ["Auth"],
-    requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(
-    required: ["token"],
-    properties: [
-    new OA\Property(property: "token", type: "string", example: "firebase-id-token"),
-    ]
-    )),
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(ref: "#/components/schemas/FirebaseLoginRequest")
+    ),
     responses: [
-    new OA\Response(response: 200, description: "Login berhasil"),
-    new OA\Response(response: 401, description: "Token tidak valid"),
-    ]
-    )]
+        new OA\Response(
+            response: 200,
+            description: "Login berhasil",
+            content: new OA\JsonContent(ref: "#/components/schemas/UserCredentialsResponse")
+        ),
+        new OA\Response(response: 422, 
+            description: "Token tidak valid",
+            content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+        ),
+    ])]
     # ---
     public function firebaseLogin(Request $request)
     {
@@ -111,37 +116,43 @@ class AuthController extends Controller
             $name          = $verifiedToken->claims()->get('name') ?? 'User';
             
             $user = User::firstOrCreate(
-            ['email' => $email],
-            [
-            'name'     => $name,
-            'password' => bcrypt(str()->random(32)), // random, tidak dipakai
-            'role'     => 'user',
-            ]
+                ['email' => $email],
+                [
+                    'name'     => $name,
+                    'password' => bcrypt(str()->random(32)), // random, tidak dipakai
+                    'role'     => 'user',
+                ]
             );
             
             $token = $user->createToken('firebase')->plainTextToken;
             
             return response()->json([
-            'user'  => $user,
-            'token' => $token,
+                'user'  => $user,
+                'token' => $token,
             ]);
             
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Token tidak valid'], 401);
+            return response()->json(['message' => 'token_invalid'], 401);
         }
     }
 
     # ---
     #[OA\Post(
     path: "/auth/logout",
+    operationId: "authLogout",
     summary: "Logout",
     security: [["sanctum" => []]],
     tags: ["Auth"],
     responses: [
-    new OA\Response(response: 200, description: "Logged out"),
-    new OA\Response(response: 401, description: "Unauthenticated"),
-    ]
-    )]
+        new OA\Response(response: 200, 
+            description: "Logged out",
+            content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+        ),
+        new OA\Response(response: 401, 
+            description: "Unauthenticated",
+            content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+        ),
+    ])]
     # ---
     public function logout(Request $request)
     {

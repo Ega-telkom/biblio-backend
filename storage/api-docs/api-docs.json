@@ -11,79 +11,43 @@
         }
     ],
     "paths": {
-        "/auth/login": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login admin",
-                "operationId": "99d66635c4992aeaa6aa44ff653d0563",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "example": "admin@biblio.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "example": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Login berhasil"
-                    },
-                    "422": {
-                        "description": "Credentials tidak valid"
-                    }
-                }
-            }
-        },
         "/auth/firebase": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Login user via Firebase token",
-                "operationId": "88d6007cf1d6a464c4a19b5edf8ab9cf",
+                "operationId": "authFirebase",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "token"
-                                ],
-                                "properties": {
-                                    "token": {
-                                        "type": "string",
-                                        "example": "firebase-id-token"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/FirebaseLoginRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Login berhasil"
+                        "description": "Login berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserCredentialsResponse"
+                                }
+                            }
+                        }
                     },
-                    "401": {
-                        "description": "Token tidak valid"
+                    "422": {
+                        "description": "Token tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -94,13 +58,27 @@
                     "Auth"
                 ],
                 "summary": "Logout",
-                "operationId": "6abf3b64a4bc7838d56346f05a5153af",
+                "operationId": "authLogout",
                 "responses": {
                     "200": {
-                        "description": "Logged out"
+                        "description": "Logged out",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1031,6 +1009,112 @@
         }
     },
     "components": {
+        "schemas": {
+            "FirebaseLoginRequest": {
+                "required": [
+                    "token"
+                ],
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "firebase-id-token"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "admin@biblio.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "ApiMessageResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserCredentialsResponse": {
+                "properties": {
+                    "user": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "user"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "user@somewhere.com"
+                            },
+                            "email_verified_at": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "example": "2026-05-22T02:03:07.000000Z"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "example": "2026-05-22T02:03:07.000000Z"
+                            },
+                            "role": {
+                                "type": "string",
+                                "example": "user"
+                            },
+                            "avatar_url": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "avatar": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "token": {
+                        "type": "string",
+                        "example": "XX|XXXXX"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "sanctum": {
                 "type": "http",
