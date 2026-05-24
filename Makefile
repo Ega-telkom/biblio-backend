@@ -1,4 +1,4 @@
-.PHONY: dev dev-build dev-rebuild dev-down prod prod-build prod-down prod-migrate migrate fresh seed cache shell shell-prod logs down restart
+.PHONY: dev dev-build dev-rebuild dev-down prod prod-build prod-down prod-migrate migrate fresh seed cache shell shell-prod logs down restart client swagger
 
 # ─── Auto-detect podman / docker ───────────────────────────
 DOCKER  := $(shell command -v podman 2>/dev/null || command -v docker)
@@ -65,3 +65,14 @@ down:
 
 restart:
 	$(COMPOSE) -f $(DEV_FILE) restart app
+
+client:
+	npx @openapitools/openapi-generator-cli generate \
+		-i storage/api-docs/api-docs.json \
+		-g kotlin \
+		--library jvm-retrofit2 \
+		-o ./generated-client \
+		--additional-properties packageName=com.example.biblio
+
+swagger:
+	php artisan l5-swagger:generate
