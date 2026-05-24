@@ -13,26 +13,32 @@ class AvatarController extends Controller
 {
     #---
     #[OA\Post(
-    path: "/profile/avatar",
-    summary: "Upload avatar user",
-    security: [["sanctum" => []]],
-    tags: ["Avatar"],
-    requestBody: new OA\RequestBody(
-    required: true,
-    content: new OA\MediaType(
-    mediaType: "multipart/form-data",
-    schema: new OA\Schema(
-    required: ["avatar"],
-    properties: [
-    new OA\Property(property: "avatar", type: "string", format: "binary"),
-    ]))),
-    responses: [
-    new OA\Response(response: 200, description: "OK", content: new OA\JsonContent(
-    properties: [new OA\Property(property: "avatar", type: "string")]
-    )),
-    new OA\Response(response: 422, description: "Validation error"),
-    new OA\Response(response: 401, description: "Unauthenticated"),
-    ])]
+        path: "/profile/avatar",
+        summary: "Upload avatar user",
+        security: [["sanctum" => []]],
+        tags: ["Avatar"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: "multipart/form-data",
+                schema: new OA\Schema(ref: "#/components/schemas/AvatarRequest")
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, 
+                description: "Berhasil",
+                content: new OA\JsonContent(ref: "#/components/schemas/AvatarResponse")
+            ),
+            new OA\Response(response: 401, 
+                description: "Unauthenticated",
+                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            ),
+            new OA\Response(response: 422, 
+                description: "File tidak valid",
+                content: new OA\JsonContent(ref: "#/components/schemas/ValidationErrorResponse")
+            ),
+        ]
+    )]
     #---
     public function uploadAvatar(Request $request)
     {
@@ -61,16 +67,20 @@ class AvatarController extends Controller
 
     #---
     #[OA\Delete(
-    path: "/profile/avatar",
-    summary: "Hapus avatar user",
-    security: [["sanctum" => []]],
-    tags: ["Avatar"],
-    responses: [
-    new OA\Response(response: 200, description: "OK", content: new OA\JsonContent(
-    properties: [new OA\Property(property: "message", type: "string")]
-    )),
-    new OA\Response(response: 401, description: "Unauthenticated"),
-    ]
+        path: "/profile/avatar",
+        summary: "Hapus avatar user",
+        security: [["sanctum" => []]],
+        tags: ["Avatar"],
+        responses: [
+            new OA\Response(response: 200, 
+                description: "Berhasil",
+                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            ),
+            new OA\Response(response: 401, 
+                description: "Unauthenticated",
+                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            ),
+        ]
     )]
     #---
     public function deleteAvatar(Request $request)

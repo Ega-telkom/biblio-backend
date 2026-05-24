@@ -44,7 +44,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
                                 }
                             }
                         }
@@ -100,41 +100,41 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    "avatar"
-                                ],
-                                "properties": {
-                                    "avatar": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/AvatarRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Berhasil",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "avatar": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/AvatarResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
                                 }
                             }
                         }
                     },
                     "422": {
-                        "description": "Validation error"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
+                        "description": "File tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -151,22 +151,24 @@
                 "operationId": "bb2851adbccf467612e0cff624732332",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Berhasil",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1010,6 +1012,18 @@
     },
     "components": {
         "schemas": {
+            "AvatarRequest": {
+                "required": [
+                    "avatar"
+                ],
+                "properties": {
+                    "avatar": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
             "FirebaseLoginRequest": {
                 "required": [
                     "token"
@@ -1042,6 +1056,14 @@
             "ApiMessageResponse": {
                 "properties": {
                     "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "AvatarResponse": {
+                "properties": {
+                    "avatar": {
                         "type": "string"
                     }
                 },
