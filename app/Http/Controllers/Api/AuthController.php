@@ -99,7 +99,7 @@ class AuthController extends Controller
         ),
         new OA\Response(response: 422, 
             description: "Token tidak valid",
-            content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            content: new OA\JsonContent(ref: "#/components/schemas/ValidationErrorResponse")
         ),
     ])]
     # ---
