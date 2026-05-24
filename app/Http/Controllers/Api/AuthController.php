@@ -107,7 +107,7 @@ class AuthController extends Controller
     public function firebaseLogin(Request $request)
     {
         $request->validate([
-        'token' => 'required|string',
+            'token' => 'required|string',
         ]);
         
         try {
