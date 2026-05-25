@@ -212,8 +212,15 @@ class BookController extends Controller
     ]
     )]
     # ---
-    public function download(Book $book)
+    public function download(Request $request, Book $book)
     {
+        // Baca Saja (preview): hanya buku gratis (price = 0)
+        if ($request->boolean('preview') && $book->price > 0) {
+            return response()->json([
+                'message' => 'Buku berbayar. Gunakan Beli & Baca untuk akses penuh.',
+            ], 403);
+        }
+
         if (!Storage::disk('s3')->exists($book->file_path)) {
             return response()->json(['message' => 'File not found'], 404);
         }

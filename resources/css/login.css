@@ -1,0 +1,312 @@
+/* Biblio Admin Login — layout dua kolom (kiri: form, kanan: logo) */
+
+:root {
+  --biblio-teal: #1abc9c;
+  --biblio-teal-dark: #16a085;
+  --biblio-teal-light: #e8f8f5;
+  --text-primary: #1a1a2e;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --bg-page: #f8fafc;
+  --white: #ffffff;
+  --shadow: 0 25px 50px -12px rgba(26, 26, 46, 0.12);
+  --radius: 12px;
+  --font: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Wrapper utama: grid 2 kolom */
+.login-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+/* ——— Panel kiri: form login ——— */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem clamp(2rem, 5vw, 4rem);
+  background: var(--white);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.brand-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.brand-name span {
+  color: var(--biblio-teal);
+}
+
+.form-title {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.form-subtitle {
+  margin: 0 0 2rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.field-group {
+  margin-bottom: 1.25rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.field-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 1rem;
+  background: var(--bg-page);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-wrap:focus-within {
+  border-color: var(--biblio-teal);
+  box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.15);
+  background: var(--white);
+}
+
+.field-wrap i {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.field-wrap input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.875rem 0;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+
+.field-wrap input::placeholder {
+  color: #9ca3af;
+}
+
+.eye-toggle {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.eye-toggle:hover {
+  color: var(--biblio-teal);
+}
+
+.forgot-link {
+  text-align: right;
+  margin-bottom: 1.5rem;
+}
+
+.forgot-link a {
+  font-size: 0.875rem;
+  color: var(--biblio-teal);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-link a:hover {
+  text-decoration: underline;
+  color: var(--biblio-teal-dark);
+}
+
+.btn-login {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--white);
+  background: var(--biblio-teal);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn-login:hover {
+  background: var(--biblio-teal-dark);
+}
+
+.btn-login:active {
+  transform: scale(0.98);
+}
+
+/* Divider — disembunyikan di desktop, tidak dipakai di layout grid */
+.divider {
+  display: none;
+}
+
+/* ——— Panel kanan: gambar logo Biblio ——— */
+.right-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(145deg, var(--biblio-teal) 0%, var(--biblio-teal-dark) 100%);
+  overflow: hidden;
+}
+
+/* Pola dekoratif halus */
+.right-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.right-panel-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 420px;
+}
+
+.biblio-logo {
+  width: min(280px, 55vw);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.right-panel-tagline {
+  margin-top: 2rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.right-panel-desc {
+  margin-top: 0.5rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Elemen lama (stat pill, svg) — tidak dipakai */
+.illus-bg,
+.stat-pill,
+.badge-admin {
+  display: none;
+}
+
+/* ——— Responsif: mobile = satu kolom, gambar di atas ——— */
+@media (max-width: 900px) {
+  .login-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .right-panel {
+    min-height: 220px;
+    padding: 2rem 1.5rem;
+    order: -1;
+  }
+
+  .biblio-logo {
+    width: min(160px, 40vw);
+  }
+
+  .right-panel-tagline {
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+
+  .left-panel {
+    padding: 2rem 1.5rem 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.5rem;
+  }
+}
