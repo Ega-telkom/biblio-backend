@@ -5,7 +5,7 @@ namespace App\OpenApi\Schemas\Requests;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "LoginRequest",
+    schema: "Login",
     required: ["email", "password"],
     properties: [
         new OA\Property(property: "email", type: "string", example: "admin@biblio.com"),

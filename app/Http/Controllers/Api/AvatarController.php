@@ -14,6 +14,7 @@ class AvatarController extends Controller
     #---
     #[OA\Post(
         path: "/profile/avatar",
+        operationId: "uploadAvatar",
         summary: "Upload avatar user",
         security: [["sanctum" => []]],
         tags: ["Avatar"],
@@ -21,7 +22,7 @@ class AvatarController extends Controller
             required: true,
             content: new OA\MediaType(
                 mediaType: "multipart/form-data",
-                schema: new OA\Schema(ref: "#/components/schemas/AvatarRequest")
+                schema: new OA\Schema(ref: "#/components/schemas/Avatar")
             )
         ),
         responses: [
@@ -68,6 +69,7 @@ class AvatarController extends Controller
     #---
     #[OA\Delete(
         path: "/profile/avatar",
+        operationId: "deleteAvatar",
         summary: "Hapus avatar user",
         security: [["sanctum" => []]],
         tags: ["Avatar"],

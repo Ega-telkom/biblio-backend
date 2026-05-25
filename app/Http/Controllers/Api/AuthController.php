@@ -89,7 +89,7 @@ class AuthController extends Controller
         tags: ["Auth"],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/FirebaseLoginRequest")
+            content: new OA\JsonContent(ref: "#/components/schemas/FirebaseLogin")
         ),
         responses: [
             new OA\Response(
