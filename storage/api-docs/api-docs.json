@@ -23,7 +23,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/FirebaseLoginRequest"
+                                "$ref": "#/components/schemas/FirebaseLogin"
                             }
                         }
                     }
@@ -94,13 +94,13 @@
                     "Avatar"
                 ],
                 "summary": "Upload avatar user",
-                "operationId": "4885f8274acccf0dcd7017c62b0c1658",
+                "operationId": "uploadAvatar",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/AvatarRequest"
+                                "$ref": "#/components/schemas/Avatar"
                             }
                         }
                     }
@@ -148,7 +148,7 @@
                     "Avatar"
                 ],
                 "summary": "Hapus avatar user",
-                "operationId": "bb2851adbccf467612e0cff624732332",
+                "operationId": "deleteAvatar",
                 "responses": {
                     "200": {
                         "description": "Berhasil",
@@ -184,7 +184,7 @@
                     "Books"
                 ],
                 "summary": "List semua buku (paginated)",
-                "operationId": "921c595372ab399821e267fcf05cbaa1",
+                "operationId": "getBooks",
                 "parameters": [
                     {
                         "name": "page",
@@ -196,103 +196,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Books"
-                ],
-                "summary": "Upload buku baru (admin)",
-                "operationId": "7ab92284110ace5d0f7de52f372e70c0",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "genre_id",
-                                    "title",
-                                    "author",
-                                    "lang",
-                                    "format",
-                                    "price",
-                                    "file"
-                                ],
-                                "properties": {
-                                    "genre_id": {
-                                        "type": "integer"
-                                    },
-                                    "title": {
-                                        "type": "string"
-                                    },
-                                    "isbn": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "author": {
-                                        "type": "string"
-                                    },
-                                    "publisher": {
-                                        "type": "string"
-                                    },
-                                    "lang": {
-                                        "type": "string",
-                                        "example": "id"
-                                    },
-                                    "published_date": {
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "format": {
-                                        "type": "string",
-                                        "enum": [
-                                            "pdf",
-                                            "epub",
-                                            "mobi",
-                                            "djvu"
-                                        ]
-                                    },
-                                    "page_count": {
-                                        "type": "integer"
-                                    },
-                                    "price": {
-                                        "type": "integer"
-                                    },
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "cover": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookPaginatedResponse"
+                                }
                             }
                         }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Buku dibuat"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -308,133 +229,7 @@
                     "Books"
                 ],
                 "summary": "Detail buku",
-                "operationId": "e079e587c1fee53fe150984526abf3ef",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Books"
-                ],
-                "summary": "Update buku (admin)",
-                "operationId": "b47b1606570ba86a105bf62f04de6b7f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "type": "string"
-                                    },
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "cover": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Books"
-                ],
-                "summary": "Hapus buku (admin)",
-                "operationId": "95c7fc7d78f9dc3884a5bb898b7ead11",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Deleted"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
-        "/books/{id}/download": {
-            "get": {
-                "tags": [
-                    "Books"
-                ],
-                "summary": "Dapatkan temporary URL download file buku",
-                "operationId": "da268d6d00e0ca63ab93d50bf2406f0b",
+                "operationId": "getBook",
                 "parameters": [
                     {
                         "name": "id",
@@ -452,21 +247,87 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "url": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/Book"
                                 }
                             }
                         }
                     },
                     "404": {
-                        "description": "File not found"
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/books/{id}/download": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Dapatkan temporary URL download file buku",
+                "operationId": "downloadBook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookDownloadResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -482,7 +343,7 @@
                     "Books"
                 ],
                 "summary": "List buku berdasarkan genre (paginated)",
-                "operationId": "983c9ee4338619b4a4fbf896f9b451b1",
+                "operationId": "getBooksByGenre",
                 "parameters": [
                     {
                         "name": "id",
@@ -502,10 +363,34 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookPaginatedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1012,7 +897,104 @@
     },
     "components": {
         "schemas": {
-            "AvatarRequest": {
+            "Book": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "8fd93ee3-3815-4334-9218-7ebc50e1343f"
+                    },
+                    "genre_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Judul Buku"
+                    },
+                    "isbn": {
+                        "type": "string",
+                        "example": "123ABC"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "author": {
+                        "type": "string",
+                        "example": "Seseorang"
+                    },
+                    "publisher": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "lang": {
+                        "type": "string",
+                        "example": "id"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "format": {
+                        "type": "string",
+                        "example": "pdf"
+                    },
+                    "page_count": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": 1234
+                    },
+                    "cover_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "cover_sm": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "cover_md": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "cover_lg": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "genre": {
+                        "$ref": "#/components/schemas/Genre"
+                    }
+                },
+                "type": "object"
+            },
+            "Genre": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Biologi"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Avatar": {
                 "required": [
                     "avatar"
                 ],
@@ -1024,7 +1006,7 @@
                 },
                 "type": "object"
             },
-            "FirebaseLoginRequest": {
+            "FirebaseLogin": {
                 "required": [
                     "token"
                 ],
@@ -1036,7 +1018,7 @@
                 },
                 "type": "object"
             },
-            "LoginRequest": {
+            "Login": {
                 "required": [
                     "email",
                     "password"
@@ -1065,6 +1047,61 @@
                 "properties": {
                     "avatar": {
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BookDownloadResponse": {
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BookPaginatedResponse": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Book"
+                        }
+                    },
+                    "first_page_url": {
+                        "type": "string"
+                    },
+                    "from": {
+                        "type": "integer"
+                    },
+                    "last_page": {
+                        "type": "integer"
+                    },
+                    "last_page_url": {
+                        "type": "string"
+                    },
+                    "next_page_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "per_page": {
+                        "type": "integer"
+                    },
+                    "prev_page_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "to": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
