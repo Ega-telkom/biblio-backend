@@ -14,6 +14,7 @@ class GenreController extends Controller
     # ---
     #[OA\Get(
         path: "/genres",
+        operationId: "getGenres",
         summary: "List semua genre",
         security: [["sanctum" => []]],
         tags: ["Genres"],
@@ -77,6 +78,7 @@ class GenreController extends Controller
     # ---
     #[OA\Get(
         path: "/genres/{id}",
+        operationId: "getGenre",
         summary: "Detail genre",
         security: [["sanctum" => []]],
         tags: ["Genres"],
@@ -162,6 +164,7 @@ class GenreController extends Controller
     # ---
     #[OA\Get(
         path: "/genres/with-books",
+        operationId: "getGenreWithBooks",
         summary: "List genre beserta preview buku (untuk beranda)",
         security: [["sanctum" => []]],
         tags: ["Genres"],
