@@ -406,7 +406,7 @@
                     "Genres"
                 ],
                 "summary": "List semua genre",
-                "operationId": "27af9332113bd8ed716ad2088042ab03",
+                "operationId": "getGenres",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -445,7 +445,7 @@
                     "Genres"
                 ],
                 "summary": "Detail genre",
-                "operationId": "795de0eccb10e36c4fe0be439114aa26",
+                "operationId": "getGenre",
                 "parameters": [
                     {
                         "name": "id",
@@ -501,7 +501,7 @@
                     "Genres"
                 ],
                 "summary": "List genre beserta preview buku (untuk beranda)",
-                "operationId": "7e2bd27932db1b4edb7525500b35c1fd",
+                "operationId": "getGenreWithBooks",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -537,13 +537,30 @@
                     "Readlists"
                 ],
                 "summary": "List readlist milik user",
-                "operationId": "04bda8ad9a0fd24e8e39e3d3a4e6beb5",
+                "operationId": "getReadlists",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ReadlistDetail"
+                                    }
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -557,35 +574,37 @@
                     "Readlists"
                 ],
                 "summary": "Buat readlist baru",
-                "operationId": "58f355d83b6b6da9a1619785455ccc4c",
+                "operationId": "postReadlist",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Buku Favorit"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ReadlistRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Readlist dibuat"
+                        "description": "Readlist dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Readlist"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -601,7 +620,7 @@
                     "Readlists"
                 ],
                 "summary": "Detail readlist",
-                "operationId": "a72e809f0206ae9c148ba21fb2e45187",
+                "operationId": "getReadlist",
                 "parameters": [
                     {
                         "name": "id",
@@ -615,13 +634,34 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    },
-                    "403": {
-                        "description": "Forbidden"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReadlistDetail"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -635,7 +675,7 @@
                     "Readlists"
                 ],
                 "summary": "Update readlist",
-                "operationId": "212abb93a2dd33a99a6853ff170795d8",
+                "operationId": "updateReadlist",
                 "parameters": [
                     {
                         "name": "id",
@@ -648,31 +688,45 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UpdateReadlistRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Readlist dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Readlist"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -686,7 +740,7 @@
                     "Readlists"
                 ],
                 "summary": "Hapus readlist",
-                "operationId": "99555442c46fd65175681dc16b089d51",
+                "operationId": "deleteReadlist",
                 "parameters": [
                     {
                         "name": "id",
@@ -700,13 +754,27 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "Deleted"
+                        "description": "Readlist dihapus"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -722,7 +790,7 @@
                     "Readlists"
                 ],
                 "summary": "Tambah buku ke readlist",
-                "operationId": "f6568b20ee6c712ba3bfe9ff0185bd8f",
+                "operationId": "addBookToReadlist",
                 "parameters": [
                     {
                         "name": "id",
@@ -739,29 +807,51 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "book_id"
-                                ],
-                                "properties": {
-                                    "book_id": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ReadlistBookRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Buku ditambahkan"
+                    "201": {
+                        "description": "Readlist dibuat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Buku tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -775,7 +865,7 @@
                     "Readlists"
                 ],
                 "summary": "Hapus buku dari readlist",
-                "operationId": "3cc041a221892c1cc97c20c1aa304665",
+                "operationId": "deleteBookFromReadlist",
                 "parameters": [
                     {
                         "name": "id",
@@ -792,29 +882,51 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "book_id"
-                                ],
-                                "properties": {
-                                    "book_id": {
-                                        "type": "string",
-                                        "format": "uuid"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/ReadlistBookRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Buku dihapus"
+                    "201": {
+                        "description": "Buku dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Buku tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -924,6 +1036,66 @@
                 },
                 "type": "object"
             },
+            "ReadlistDetail": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "bbaab57d-69c9-49c8-8652-a930b5ee8fa0"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Buku Favorit"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "books": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Book"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Readlist": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "bbaab57d-69c9-49c8-8652-a930b5ee8fa0"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Buku Favorit"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Avatar": {
                 "required": [
                     "avatar"
@@ -961,6 +1133,47 @@
                     "password": {
                         "type": "string",
                         "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "ReadlistBookRequest": {
+                "required": [
+                    "book_id"
+                ],
+                "properties": {
+                    "book_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "ReadlistRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Buku Favorit"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateReadlistRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Buku Favorit"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object"
