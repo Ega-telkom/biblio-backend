@@ -262,12 +262,15 @@ class ReadlistController extends Controller
             content: new OA\JsonContent(ref: "#/components/schemas/ReadlistBookRequest")
         ),
         responses: [
-            new OA\Response(response: 201, 
+            new OA\Response(response: 204, 
                 description: "Buku dihapus",
-                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
             ),
             new OA\Response(response: 403, 
                 description: "Forbidden",
+                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            ),
+            new OA\Response(response: 404, 
+                description: "Not Found",
                 content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
             ),
             new OA\Response(response: 422, 
@@ -283,11 +286,13 @@ class ReadlistController extends Controller
     # ---
     public function removeBook(Request $request, Readlist $readlist)
     {
+        if (!$readlist) {
+            return response()->json(['message' => 'not_found'], 404);
+        }
+    
         $this->authorize($request, $readlist);
-
         $request->validate(['book_id' => 'required|uuid|exists:books,id']);
         $readlist->books()->detach($request->book_id);
-
-        return response()->json(['message' => 'book_deleted_from_readlist'], 201);
+        return response()->json(null, 204);
     }
 }
