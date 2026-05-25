@@ -888,8 +888,11 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Buku dihapus",
+                    "204": {
+                        "description": "Buku dihapus"
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -898,8 +901,8 @@
                             }
                         }
                     },
-                    "403": {
-                        "description": "Forbidden",
+                    "404": {
+                        "description": "Not Found",
                         "content": {
                             "application/json": {
                                 "schema": {

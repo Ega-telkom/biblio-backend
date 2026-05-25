@@ -7,9 +7,6 @@ use App\Http\Controllers\Api\ReadlistController;
 use App\Http\Controllers\Api\AvatarController;
 use Illuminate\Support\Facades\Route;
 
-// Admin auth
-Route::post('/auth/login', [AuthController::class, 'login']);
-
 // Firebase auth (user)
 Route::post('/auth/firebase', [AuthController::class, 'firebaseLogin']);
 
