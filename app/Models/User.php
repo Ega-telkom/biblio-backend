@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -44,13 +45,14 @@ use Filament\Panel;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar_url'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
+    protected $appends = ['avatar'];
     /**
     * Get the attributes that should be cast.
     *
@@ -77,5 +79,11 @@ class User extends Authenticatable implements FilamentUser
         
         // Atau jika kamu pakai package Spatie Permission:
         // return $this->hasRole('admin');
+    }
+    
+    public function getAvatarAttribute(): ?string
+    {
+        if (!$this->avatar_url) return null;
+        return Storage::disk('avatars')->url($this->avatar_url);
     }
 }

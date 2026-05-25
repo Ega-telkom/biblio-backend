@@ -10,22 +10,25 @@ class MinioSeeder extends Seeder
     {
         $client = new S3Client([
             'version'  => 'latest',
-            'region'   => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'endpoint' => env('AWS_ENDPOINT_INTERNAL'),
+            'region'   => config('filesystems.disks.s3.region'),
+            'endpoint' => config('filesystems.disks.s3.endpoint'),
             'use_path_style_endpoint' => true,
             'credentials' => [
-                'key'    => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                'key'    => config('filesystems.disks.s3.key'),
+                'secret' => config('filesystems.disks.s3.secret'),
             ],
         ]);
-    
+
         // Bucket private untuk file buku
-        if (!$client->doesBucketExist('biblio')) {
+        try {
             $client->createBucket(['Bucket' => 'biblio']);
+            $this->command->info('Bucket biblio created');
+        } catch (\Exception $e) {
+            $this->command->warn('biblio: ' . $e->getMessage());
         }
-    
-        // Bucket public untuk cover
-        if (!$client->doesBucketExist('biblio-covers')) {
+
+
+        try {
             $client->createBucket(['Bucket' => 'biblio-covers']);
             $client->putBucketPolicy([
                 'Bucket' => 'biblio-covers',
@@ -39,6 +42,47 @@ class MinioSeeder extends Seeder
                     ]],
                 ]),
             ]);
+            $this->command->info('Bucket biblio-covers created');
+        } catch (\Exception $e) {
+            $this->command->warn('biblio-covers: ' . $e->getMessage());
+        }
+        
+        try {
+            $client->putBucketLifecycleConfiguration([
+                'Bucket' => 'biblio-covers',
+                'LifecycleConfiguration' => [
+                    'Rules' => [
+                        [
+                            'ID'     => 'delete-temp',
+                            'Status' => 'Enabled',
+                            'Filter' => ['Prefix' => 'temp/'],
+                            'Expiration' => ['Days' => 1],
+                        ],
+                    ],
+                ],
+            ]);
+            $this->command->info('Lifecycle temp/ set');
+        } catch (\Exception $e) {
+            $this->command->warn('Lifecycle: ' . $e->getMessage());
+        }
+        
+        try {
+            $client->createBucket(['Bucket' => 'biblio-avatars']);
+            $client->putBucketPolicy([
+                'Bucket' => 'biblio-avatars',
+                'Policy' => json_encode([
+                    'Version' => '2012-10-17',
+                    'Statement' => [[
+                        'Effect'    => 'Allow',
+                        'Principal' => '*',
+                        'Action'    => 's3:GetObject',
+                        'Resource'  => 'arn:aws:s3:::biblio-avatars/*',
+                    ]],
+                ]),
+            ]);
+            $this->command->info('Bucket biblio-avatars created');
+        } catch (\Exception $e) {
+            $this->command->warn('biblio-avatars: ' . $e->getMessage());
         }
     }
 }

@@ -1,30 +1,34 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.5-fpm-alpine
 
-RUN apk add --no-cache \
-    postgresql-dev \
-    libpng-dev \
-    libzip-dev \
-    libjpeg-turbo-dev \
-    icu-dev \
-    autoconf g++ make \
-    zip unzip git curl \
-    gnu-libiconv
+# 1. Install utility dasar yang dibutuhkan runtime aplikasi
+RUN apk add --no-cache git curl unzip gnu-libiconv
 
-RUN docker-php-ext-configure gd --with-jpeg && \
-    docker-php-ext-install \
-    pdo pdo_pgsql pgsql gd zip bcmath exif intl opcache
+# 2. Ambil script installer resmi dari repository terpercaya
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN pecl install redis && docker-php-ext-enable redis
+# 3. FIX MUTLAK: Biarkan script yang merakit semua ekstensi PHP 8.5 secara otomatis & aman
+RUN install-php-extensions \
+    gd \
+    pdo \
+    pdo_pgsql \
+    pgsql \
+    intl \
+    zip \
+    bcmath \
+    exif \
+    opcache \
+    redis
 
+# ---- Sisa konfigurasi Laravel ----
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 WORKDIR /var/www
-
 COPY . .
-
 RUN composer install --no-dev --optimize-autoloader --no-interaction
-
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+RUN echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/uploads.ini
 
 EXPOSE 9000
 CMD ["php-fpm"]

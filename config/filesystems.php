@@ -48,16 +48,25 @@ return [
         ],
 
         's3' => [
+            'driver'                  => 's3',
+            'key'                     => env('AWS_ACCESS_KEY_ID'),
+            'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
+            'region'                  => env('AWS_DEFAULT_REGION'),
+            'bucket'                  => env('AWS_BUCKET'),
+            'endpoint'                => env('AWS_ENDPOINT'),     // http://minio:9000
+            'url'                     => env('AWS_URL'),          // https://biblio-cdn.duckdns.org/biblio (opsional)
+            'use_path_style_endpoint' => true,
+            'throw'                   => true,                    // ganti false → true biar error ketahuan
+        ],
+
+        's3_public' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
+            'key'    => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT_INTERNAL'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
-            'report' => false,
+            'endpoint' => 'https://biblio-cdn.duckdns.org',  // public
+            'use_path_style_endpoint' => true,
         ],
         
         'covers' => [
@@ -66,9 +75,22 @@ return [
             'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
             'region'                  => env('AWS_DEFAULT_REGION'),
             'bucket'                  => 'biblio-covers',
-            'endpoint'                => env('AWS_ENDPOINT_INTERNAL'),
+            'endpoint'                => env('AWS_ENDPOINT'),     // http://minio:9000
+            'url'                     => env('AWS_COVERS_URL'),   // https://biblio-cdn.duckdns.org/biblio-covers
             'use_path_style_endpoint' => true,
-            'url'                     => env('AWS_COVERS_URL', env('AWS_ENDPOINT').'/biblio-covers'),
+            'throw'                   => true,
+        ],
+        
+        'avatars' => [
+            'driver'                  => 's3',
+            'key'                     => env('AWS_ACCESS_KEY_ID'),
+            'secret'                  => env('AWS_SECRET_ACCESS_KEY'),
+            'region'                  => env('AWS_DEFAULT_REGION'),
+            'bucket'                  => 'biblio-avatars',
+            'endpoint'                => env('AWS_ENDPOINT'),
+            'url'                     => env('AWS_AVATAR_URL'),
+            'use_path_style_endpoint' => true,
+            'throw'                   => true,
         ],
 
     ],
