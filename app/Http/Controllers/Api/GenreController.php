@@ -184,7 +184,12 @@ class GenreController extends Controller
     public function withBooks()
     {
         $genres = cache()->remember('genres_with_books', 300, function () {
-            return Genre::with(['books' => fn($q) => $q->limit(10)])->limit(10)->get();
+            return Genre::withCount('books')
+                ->with(['books' => fn($q) => $q->limit(10)])
+                ->having('books_count', '>', 0)
+                ->orderByDesc('books_count')
+                ->limit(10)
+                ->get();
         });
     
         $genres->each(function ($genre) {
