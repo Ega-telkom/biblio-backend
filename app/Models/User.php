@@ -45,14 +45,14 @@ use Filament\Panel;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'password', 'role', 'avatar_url'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar_url', 'subscribed_until'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $appends = ['avatar'];
+    protected $appends = ['avatar', 'is_subscribed'];
     /**
     * Get the attributes that should be cast.
     *
@@ -61,8 +61,9 @@ class User extends Authenticatable implements FilamentUser
     protected function casts(): array
     {
         return [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'subscribed_until'  => 'datetime'
         ];
     }
     
@@ -85,5 +86,16 @@ class User extends Authenticatable implements FilamentUser
     {
         if (!$this->avatar_url) return null;
         return Storage::disk('avatars')->url($this->avatar_url);
+    }
+    
+    public function getIsSubscribedAttribute(): bool
+    {
+        return $this->subscribed_until !== null 
+            && $this->subscribed_until->isFuture();
+    }
+    
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

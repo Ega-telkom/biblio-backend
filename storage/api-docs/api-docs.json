@@ -88,96 +88,6 @@
                 ]
             }
         },
-        "/profile/avatar": {
-            "post": {
-                "tags": [
-                    "Avatar"
-                ],
-                "summary": "Upload avatar user",
-                "operationId": "uploadAvatar",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Avatar"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Berhasil",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/AvatarResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiMessageResponse"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "File tidak valid",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Avatar"
-                ],
-                "summary": "Hapus avatar user",
-                "operationId": "deleteAvatar",
-                "responses": {
-                    "200": {
-                        "description": "Berhasil",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiMessageResponse"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiMessageResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
-            }
-        },
         "/books": {
             "get": {
                 "tags": [
@@ -509,6 +419,175 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/GenreWithBooksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/payment/subscribe": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Buat transaksi langganan, return Snap token",
+                "operationId": "c7cc2af47750ec7e43d410736a7a11e7",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "snap_token": {
+                                            "type": "string"
+                                        },
+                                        "order_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/payment/webhook": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Webhook Midtrans (tidak perlu auth)",
+                "operationId": "78cbf7e00a18bb2277f672ae6171e7d1",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Invalid signature"
+                    },
+                    "404": {
+                        "description": "Transaction not found"
+                    }
+                }
+            }
+        },
+        "/profile": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get profil user yang sedang login",
+                "operationId": "274fbc07758eb418369dc165a7863185",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/profile/avatar": {
+            "post": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Upload avatar user",
+                "operationId": "uploadAvatar",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Avatar"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AvatarResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "File tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Hapus avatar user",
+                "operationId": "deleteAvatar",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
                                 }
                             }
                         }
@@ -1277,6 +1356,17 @@
                 },
                 "type": "object"
             },
+            "PaymentSubscribeResponse": {
+                "properties": {
+                    "snap_token": {
+                        "type": "string"
+                    },
+                    "order_id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "UserCredentialsResponse": {
                 "properties": {
                     "user": {
@@ -1358,16 +1448,20 @@
             "description": "Auth"
         },
         {
-            "name": "Avatar",
-            "description": "Avatar"
-        },
-        {
             "name": "Books",
             "description": "Books"
         },
         {
             "name": "Genres",
             "description": "Genres"
+        },
+        {
+            "name": "Payment",
+            "description": "Payment"
+        },
+        {
+            "name": "Profile",
+            "description": "Profile"
         },
         {
             "name": "Readlists",

@@ -6,6 +6,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\DateTimePicker;
 
 class UserForm
 {
@@ -15,6 +16,10 @@ class UserForm
             TextInput::make('name')->required(),
             TextInput::make('email')->email()->required(),
             TextInput::make('password')->password()->revealable()->nullable(),
+            DateTimePicker::make('subscribed_until')
+                ->label('Aktif hingga')
+                ->nullable()
+                ->seconds(false),
             Select::make('role')
                 ->options(['admin' => 'Admin', 'user' => 'User'])
                 ->required(),

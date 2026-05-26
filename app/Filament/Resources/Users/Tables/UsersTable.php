@@ -22,6 +22,12 @@ class UsersTable
                     ->width(40),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
+                TextColumn::make('subscribed_until')
+                    ->label('Langganan')
+                    ->dateTime('d M Y')
+                    ->sortable()
+                    ->color(fn ($state) => $state && $state->isFuture() ? 'success' : 'danger')
+                    ->placeholder('Tidak aktif'),
                 TextColumn::make('role')->badge()
                     ->color(fn ($state) => $state === 'admin' ? 'warning' : 'gray'),
                 TextColumn::make('created_at')->dateTime()->sortable(),

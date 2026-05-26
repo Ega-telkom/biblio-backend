@@ -31,6 +31,14 @@ return Application::configure(basePath: dirname(__DIR__))
             // Jika dari Filament/Web, biarkan diarahkan ke halaman login Filament
             return route('filament.admin.auth.login'); 
         });
+        
+        $middleware->validateCsrfTokens(except: [
+            'api/payment/webhook',
+        ]);
+        
+        $middleware->alias([
+            'subscribed' => \App\Http\Middleware\EnsureSubscribed::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(fn ($request) => $request->is('api/*'));

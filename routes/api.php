@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 // Firebase auth (user)
 Route::post('/auth/firebase', [AuthController::class, 'firebaseLogin']);
 
+// Payment
+Route::post('/payment/webhook', [PaymentController::class, 'webhook']);
+
 // Authenticated
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -22,12 +25,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/genres/{genre}/books', [BookController::class, 'byGenre']);
     Route::get('/genres/with-books', [GenreController::class, 'withBooks']);
     Route::apiResource('/genres', GenreController::class)->only(['index', 'show']);
-    Route::get('/books/{book}/download', [BookController::class, 'download']);
     
     // Readlist
     Route::apiResource('/readlists', ReadlistController::class);
     Route::post('/readlists/{readlist}/books', [ReadlistController::class, 'addBook']);
     Route::delete('/readlists/{readlist}/books', [ReadlistController::class, 'removeBook']);
+
+    Route::middleware('subscribed')->group(function () {
+        Route::get('/books/{book}/download', [BookController::class, 'download']);
+    });
+    
+    Route::post('/payment/subscribe', [PaymentController::class, 'subscribe']);
 
     // Admin only
     Route::middleware('role:admin')->group(function () {
