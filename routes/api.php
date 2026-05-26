@@ -4,7 +4,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\GenreController;
 use App\Http\Controllers\Api\ReadlistController;
-use App\Http\Controllers\Api\AvatarController;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Firebase auth (user)
@@ -13,8 +14,9 @@ Route::post('/auth/firebase', [AuthController::class, 'firebaseLogin']);
 // Authenticated
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-    Route::post('/profile/avatar', [AvatarController::class, 'uploadAvatar']);
-    Route::delete('/profile/avatar', [AvatarController::class, 'deleteAvatar']);
+    Route::get('/profile', [ProfileController::class, 'me']);
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar']);
+    Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar']);
 
     Route::apiResource('/books', BookController::class)->only(['index', 'show']);
     Route::get('/genres/{genre}/books', [BookController::class, 'byGenre']);
