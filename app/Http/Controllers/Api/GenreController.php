@@ -184,22 +184,23 @@ class GenreController extends Controller
     public function withBooks()
     {
         $genres = cache()->remember('genres_with_books', 300, function () {
-            return Genre::withCount('books')
+            $genres = Genre::withCount('books')
                 ->with(['books' => fn($q) => $q->limit(10)])
-                ->having('books_count', '>', 0)
                 ->orderByDesc('books_count')
                 ->limit(10)
                 ->get();
-        });
-    
-        $genres->each(function ($genre) {
-            $genre->books->each(function ($book) {
-                $book->cover_url = $book->cover_url
-                    ? Storage::disk('covers')->url($book->cover_url)
-                    : null;
+        
+            $genres->each(function ($genre) {
+                $genre->books->each(function ($book) {
+                    $book->cover_url = $book->cover_url
+                        ? Storage::disk('covers')->url($book->cover_url)
+                        : null;
+                });
             });
+        
+            return $genres->toArray();  // ← di dalam closure
         });
-    
+        
         return response()->json($genres);
     }
 }
