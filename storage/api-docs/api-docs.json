@@ -447,28 +447,27 @@
                     "Payment"
                 ],
                 "summary": "Buat transaksi langganan, return Snap token",
-                "operationId": "c7cc2af47750ec7e43d410736a7a11e7",
+                "operationId": "createSubscription",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "snap_token": {
-                                            "type": "string"
-                                        },
-                                        "order_id": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/PaymentSubscribeResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -478,39 +477,33 @@
                 ]
             }
         },
-        "/payment/webhook": {
-            "post": {
-                "tags": [
-                    "Payment"
-                ],
-                "summary": "Webhook Midtrans (tidak perlu auth)",
-                "operationId": "78cbf7e00a18bb2277f672ae6171e7d1",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "403": {
-                        "description": "Invalid signature"
-                    },
-                    "404": {
-                        "description": "Transaction not found"
-                    }
-                }
-            }
-        },
         "/profile": {
             "get": {
                 "tags": [
                     "Profile"
                 ],
                 "summary": "Get profil user yang sedang login",
-                "operationId": "274fbc07758eb418369dc165a7863185",
+                "operationId": "getProfile",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1370,45 +1363,7 @@
             "UserCredentialsResponse": {
                 "properties": {
                     "user": {
-                        "properties": {
-                            "id": {
-                                "type": "integer",
-                                "example": 1
-                            },
-                            "name": {
-                                "type": "string",
-                                "example": "user"
-                            },
-                            "email": {
-                                "type": "string",
-                                "example": "user@somewhere.com"
-                            },
-                            "email_verified_at": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "created_at": {
-                                "type": "string",
-                                "example": "2026-05-22T02:03:07.000000Z"
-                            },
-                            "updated_at": {
-                                "type": "string",
-                                "example": "2026-05-22T02:03:07.000000Z"
-                            },
-                            "role": {
-                                "type": "string",
-                                "example": "user"
-                            },
-                            "avatar_url": {
-                                "type": "string",
-                                "nullable": true
-                            },
-                            "avatar": {
-                                "type": "string",
-                                "nullable": true
-                            }
-                        },
-                        "type": "object"
+                        "$ref": "#/components/schemas/User"
                     },
                     "token": {
                         "type": "string",
@@ -1430,6 +1385,57 @@
                                 "type": "string"
                             }
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "user",
+                            "admin"
+                        ]
+                    },
+                    "avatar_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subscribed_until": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_subscribed": {
+                        "type": "boolean"
                     }
                 },
                 "type": "object"

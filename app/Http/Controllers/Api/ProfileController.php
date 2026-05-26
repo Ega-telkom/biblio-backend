@@ -14,12 +14,20 @@ class ProfileController extends Controller
     #---
     #[OA\Get(
         path: "/profile",
+        operationId: "getProfile",
         summary: "Get profil user yang sedang login",
         security: [["sanctum" => []]],
         tags: ["Profile"],
         responses: [
-            new OA\Response(response: 200, description: "OK"),
-            new OA\Response(response: 401, description: "Unauthenticated"),
+            new OA\Response(
+                response: 200,
+                description: "OK",
+                content: new OA\JsonContent(ref: "#/components/schemas/User")
+            ),
+            new OA\Response(response: 401, 
+                description: "Unauthenticated",
+                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            ),
         ]
     )]
     public function me(Request $request)

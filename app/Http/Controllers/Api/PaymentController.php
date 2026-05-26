@@ -21,17 +21,19 @@ class PaymentController extends Controller
 
     #[OA\Post(
         path: "/payment/subscribe",
+        operationId: "createSubscription",
         summary: "Buat transaksi langganan, return Snap token",
         security: [["sanctum" => []]],
         tags: ["Payment"],
         responses: [
-            new OA\Response(response: 200, description: "OK", content: new OA\JsonContent(
-                properties: [
-                    new OA\Property(property: "snap_token", type: "string"),
-                    new OA\Property(property: "order_id", type: "string"),
-                ]
-            )),
-            new OA\Response(response: 401, description: "Unauthenticated"),
+            new OA\Response(response: 200, 
+                description: "OK",
+                content: new OA\JsonContent(ref: "#/components/schemas/PaymentSubscribeResponse")
+            ),
+            new OA\Response(response: 401, 
+                description: "Unauthenticated",
+                content: new OA\JsonContent(ref: "#/components/schemas/ApiMessageResponse")
+            ),
         ]
     )]
     public function subscribe(Request $request)
@@ -69,16 +71,6 @@ class PaymentController extends Controller
         ]);
     }
     
-    #[OA\Post(
-        path: "/payment/webhook",
-        summary: "Webhook Midtrans (tidak perlu auth)",
-        tags: ["Payment"],
-        responses: [
-            new OA\Response(response: 200, description: "OK"),
-            new OA\Response(response: 403, description: "Invalid signature"),
-            new OA\Response(response: 404, description: "Transaction not found"),
-        ]
-    )]
     public function webhook(Request $request)
     {
         $payload = $request->all();
