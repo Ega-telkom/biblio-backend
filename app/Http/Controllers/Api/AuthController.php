@@ -125,6 +125,11 @@ class AuthController extends Controller
                 ]
             );
             
+            // Sync name dari Firebase
+            if ($name && $user->name !== $name) {
+                $user->update(['name' => $name]);
+            }
+            
             $token = $user->createToken('firebase')->plainTextToken;
             
             return response()->json([
