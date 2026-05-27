@@ -43,12 +43,15 @@ class BookController extends Controller
         ]
     )]
     # ---
-    public function index()
+    public function index(Request $request)
     {
         $books = Book::with('genre')
             ->when($request->search, fn ($q) =>
                 $q->where(fn ($q) =>
-                    $q->whereRaw("to_tsvector('english', title || ' ' || author) @@ plainto_tsquery(?)", [$request->search])
+                    $q->whereRaw("title ILIKE ?", ["%{$request->search}%"])
+                    ->orWhereRaw("author ILIKE ?", ["%{$request->search}%"])
+                    ->orWhereRaw("similarity(title, ?) > 0.15", [$request->search])
+                    ->orWhereRaw("similarity(author, ?) > 0.15", [$request->search])
                 )
             )
             ->when($request->genre_id, fn ($q) => $q->where('genre_id', $request->genre_id))
