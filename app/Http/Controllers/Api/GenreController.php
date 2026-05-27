@@ -33,8 +33,8 @@ class GenreController extends Controller
     # ---
     public function index()
     {
-        $genre = Genre::all();
-        return response()->json($genre, 200);
+        $genres = Genre::withCount('books')->orderBy('name')->get();
+        return response()->json($genres);
     }
 
     // # ---
@@ -102,13 +102,9 @@ class GenreController extends Controller
         ]
     )]
     # ---
-    public function show($id)
+    public function show(Genre $genre)
     {
-        $genre = Genre::find($id);
-        
-        if (!$genre) return response()->json(['message' => 'not_found'], 404);
-
-        return response()->json(['data' => $genre], 200);
+        return response()->json($genre->loadCount('books'));
     }
 
     // # ---
@@ -189,16 +185,14 @@ class GenreController extends Controller
                 ->orderByDesc('books_count')
                 ->limit(10)
                 ->get();
-        
+            
             $genres->each(function ($genre) {
                 $genre->books->each(function ($book) {
-                    $book->cover_url = $book->cover_url
-                        ? Storage::disk('covers')->url($book->cover_url)
-                        : null;
+                    $book->makeVisible(['cover_sm', 'cover_md', 'cover_lg']);
                 });
             });
-        
-            return $genres->toArray();  // ← di dalam closure
+            
+            return $genres->toArray();
         });
         
         return response()->json($genres);
