@@ -458,7 +458,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GenreWithBooksResponse"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GenreWithBooksResponse"
+                                    }
                                 }
                             }
                         }
@@ -1147,6 +1150,10 @@
                     },
                     "updated_at": {
                         "type": "string"
+                    },
+                    "books_count": {
+                        "type": "integer",
+                        "example": 1
                     }
                 },
                 "type": "object"
@@ -1383,6 +1390,10 @@
                     },
                     "updated_at": {
                         "type": "string"
+                    },
+                    "books_count": {
+                        "type": "integer",
+                        "example": 1
                     },
                     "books": {
                         "type": "array",

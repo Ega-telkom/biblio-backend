@@ -80,7 +80,7 @@ class GenreController extends Controller
             new OA\Response(
                 response: 200,
                 description: "OK",
-                content: new OA\JsonContent(ref: "#/components/schemas/GenreWithBooksResponse")
+                content: new OA\JsonContent(type: "array", items: new OA\Items(ref: "#/components/schemas/GenreWithBooksResponse"))
             ),
             new OA\Response(response: 401, 
                 description: "Unauthenticated",
@@ -96,7 +96,9 @@ class GenreController extends Controller
                 ->with(['books' => fn($q) => $q->limit(10)])
                 ->orderByDesc('books_count')
                 ->limit(10)
-                ->get();
+                ->get()
+                ->filter(fn ($genre) => $genre->books_count > 0)
+                ->values();
             
             $genres->each(function ($genre) {
                 $genre->books->each(function ($book) {

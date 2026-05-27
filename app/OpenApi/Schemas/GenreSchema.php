@@ -11,6 +11,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: "name", type: "string", example: "Genre Keren"),
         new OA\Property(property: "created_at", type: "string"),
         new OA\Property(property: "updated_at", type: "string"),
+        new OA\Property(property: "books_count", type: "integer", example: 1),
     ]
 )]
 class GenreSchema {}
