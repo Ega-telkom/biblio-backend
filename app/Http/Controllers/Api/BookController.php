@@ -24,7 +24,11 @@ class BookController extends Controller
         security: [["sanctum" => []]],
         tags: ["Books"],
         parameters: [
-            new OA\Parameter(name: "page", in: "query", schema: new OA\Schema(type: "integer"))
+            new OA\Parameter(name: "page", in: "query", schema: new OA\Schema(type: "integer")),
+            new OA\Parameter(name: "search", in: "query", schema: new OA\Schema(type: "string")),
+            new OA\Parameter(name: "genre_id", in: "query", schema: new OA\Schema(type: "integer")),
+            new OA\Parameter(name: "format", in: "query", schema: new OA\Schema(type: "string", enum: ["pdf", "epub", "mobi", "djvu"])),
+            new OA\Parameter(name: "sort", in: "query", schema: new OA\Schema(type: "string", enum: ["latest", "oldest", "price_asc", "price_desc"])),
         ],
         responses: [
             new OA\Response(
@@ -41,7 +45,26 @@ class BookController extends Controller
     # ---
     public function index()
     {
-        $books = Book::with('genre')->paginate(15);
+        $books = Book::with('genre')
+            ->when($request->search, fn ($q) =>
+                $q->where(fn ($q) =>
+                    $q->whereRaw("to_tsvector('english', title || ' ' || author) @@ plainto_tsquery(?)", [$request->search])
+                )
+            )
+            ->when($request->genre_id, fn ($q) => $q->where('genre_id', $request->genre_id))
+            ->when($request->format, fn ($q) => $q->where('format', $request->format))
+            ->when($request->sort, function ($q) use ($request) {
+                match ($request->sort) {
+                    'latest'     => $q->latest(),
+                    'oldest'     => $q->oldest(),
+                    'price_asc'  => $q->orderBy('price'),
+                    'price_desc' => $q->orderByDesc('price'),
+                    default      => $q->latest(),
+                };
+            }, fn ($q) => $q->latest())
+            ->paginate(15)
+            ->withQueryString();
+    
         return response()->json($books);
     }
 
