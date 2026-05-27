@@ -1231,6 +1231,10 @@
                     "token": {
                         "type": "string",
                         "example": "firebase-id-token"
+                    },
+                    "display_name": {
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "type": "object"

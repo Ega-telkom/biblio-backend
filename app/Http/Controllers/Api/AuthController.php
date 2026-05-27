@@ -40,14 +40,16 @@ class AuthController extends Controller
     public function firebaseLogin(Request $request)
     {
         $request->validate([
-            'token' => 'required|string',
+            'token'        => 'required|string',
+            'display_name' => 'nullable|string|max:255',
         ]);
         
         try {
             $verifiedToken = Firebase::auth()->verifyIdToken($request->token);
             $uid           = $verifiedToken->claims()->get('sub');
             $email         = $verifiedToken->claims()->get('email');
-            $name          = $verifiedToken->claims()->get('name') ?? 'User';
+            $name          = $request->display_name ?? 'User';
+
             
             $user = User::firstOrCreate(
                 ['email' => $email],
@@ -58,9 +60,9 @@ class AuthController extends Controller
                 ]
             );
             
-            // Sync name dari Firebase
-            if ($name && $user->name !== $name) {
-                $user->update(['name' => $name]);
+            // Sync name dari Firebase jika berubah
+            if ($request->display_name && $user->name !== $request->display_name) {
+                $user->update(['name' => $request->display_name]);
             }
             
             $token = $user->createToken('firebase')->plainTextToken;
