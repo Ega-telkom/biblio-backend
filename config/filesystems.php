@@ -65,7 +65,7 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
-            'endpoint' => 'https://biblio-cdn.duckdns.org',  // public
+            'endpoint' => env('AWS_URL'),  // public
             'use_path_style_endpoint' => true,
         ],
         
