@@ -24,7 +24,7 @@ class UserForm
                 ->options(['admin' => 'Admin', 'user' => 'User'])
                 ->required(),
             FileUpload::make('avatar_url')
-                ->disk('avatars')
+                ->disk('avatars_public')
                 ->directory(fn ($record) => $record?->id ?? 'temp')
                 ->image()
                 ->deletable()

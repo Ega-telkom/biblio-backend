@@ -5,6 +5,7 @@ use App\Models\Genre;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -30,18 +31,19 @@ class BookForm
             TextInput::make('page_count')->numeric(),
             TextInput::make('price')->required()->numeric()->prefix('Rp'),
             FileUpload::make('cover_url')
-                ->disk('covers')                    // langsung ke MinIO bucket biblio-covers
+                ->disk('covers_public')
                 ->directory(fn ($record) => $record?->id ?? 'temp')
                 ->image()
-                ->imageResizeTargetWidth(400)       // Filament handle resize
+                ->imageResizeTargetWidth(400)
                 ->imageResizeUpscale(false)
                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                 ->label('Cover Buku'),
             
             FileUpload::make('file_path')
-                ->disk('s3')                        // langsung ke MinIO bucket biblio-books
-                ->directory(fn ($record) => "books/{$record?->id}")
+                ->disk('s3')
+                ->directory(fn ($record) => "books{$record?->id}")
                 ->acceptedFileTypes(['application/pdf', 'application/epub+zip'])
+                ->deletable(false)
                 ->label('File Buku'),
         ]);
     }
