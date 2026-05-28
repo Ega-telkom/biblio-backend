@@ -10,7 +10,13 @@ use Illuminate\Validation\ValidationException;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use OpenApi\Attributes as OA;
 
-#[OA\Info(title: "Biblio API", version: "1.0.0", description: "API untuk Biblio")]
+#[OA\Info(title: "Biblio API", version: "1.0.0", 
+description: "API untuk Biblio.
+- Repositori: [https://github.com/Ega-telkom/biblio-backend](https://github.com/Ega-telkom/biblio-backend) 
+
+~ Dari kelompok 3
+"
+)]
 #[OA\SecurityScheme(securityScheme: "sanctum", type: "http", scheme: "bearer")]
 class AuthController extends Controller
 {

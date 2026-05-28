@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Biblio API",
-        "description": "API untuk Biblio",
+        "description": "API untuk Biblio.\n- Repositori: [https://github.com/Ega-telkom/biblio-backend](https://github.com/Ega-telkom/biblio-backend) \n\n~ Dari kelompok 3\n",
         "version": "1.0.0"
     },
     "servers": [
