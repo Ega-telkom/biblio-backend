@@ -10,6 +10,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions \
     gd \
     pdo \
+    imagick \
     pdo_pgsql \
     pgsql \
     intl \
