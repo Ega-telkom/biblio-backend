@@ -28,7 +28,7 @@ class BookForm
             Select::make('format')
                 ->options(['pdf' => 'PDF', 'epub' => 'EPUB', 'mobi' => 'MOBI', 'djvu' => 'DJVU'])
                 ->required(),
-            TextInput::make('page_count')->numeric(),
+            TextInput::make('page_count')->numeric()->required(),
             TextInput::make('price')->required()->numeric()->prefix('Rp'),
             FileUpload::make('cover_url')
                 ->disk('covers_public')
