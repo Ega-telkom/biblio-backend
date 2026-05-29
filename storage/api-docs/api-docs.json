@@ -707,6 +707,17 @@
                 ],
                 "summary": "Hapus progress baca",
                 "operationId": "deleteProgress",
+                "parameters": [
+                    {
+                        "name": "book_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "Deleted"
@@ -1247,12 +1258,15 @@
                         "type": "integer",
                         "example": 42
                     },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
                     "book": {
                         "$ref": "#/components/schemas/Book"
                     }
                 },
-                "type": "object",
-                "nullable": true
+                "type": "object"
             },
             "ReadlistDetail": {
                 "properties": {
@@ -1600,12 +1614,10 @@
                         "type": "boolean"
                     },
                     "progress": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Progress"
-                            }
-                        ],
-                        "nullable": true
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Progress"
+                        }
                     }
                 },
                 "type": "object"

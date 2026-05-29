@@ -43,12 +43,12 @@ class ProgressController extends Controller
             'last_page' => ['required', 'integer', 'min:1'],
         ]);
     
-        $request->user()->update([
-            'last_book_id' => $request->book_id,
-            'last_page'    => $request->last_page,
-        ]);
+        ReadingProgress::updateOrCreate(
+            ['user_id' => $request->user()->id, 'book_id' => $request->book_id],
+            ['last_page' => $request->last_page]
+        );
     
-        return response()->json($request->user()->load('lastBook'));
+        return response()->json($request->user()->fresh());
     }
 
     #---
@@ -58,6 +58,9 @@ class ProgressController extends Controller
         summary: "Hapus progress baca",
         security: [["sanctum" => []]],
         tags: ["Progress"],
+        parameters: [
+            new OA\Parameter(name: "book_id", in: "path", required: true, schema: new OA\Schema(type: "string", format: "uuid")),
+        ],
         responses: [
             new OA\Response(response: 204, description: "Deleted"),
             new OA\Response(response: 401, 
@@ -67,12 +70,15 @@ class ProgressController extends Controller
         ]
     )]
     #---
-    public function destroy(Request $request)
+    public function destroy(Request $request, string $bookId)
     {
-        $request->user()->update([
-            'last_book_id' => null,
-            'last_page'    => null,
-        ]);
+        $deleted = ReadingProgress::where('user_id', $request->user()->id)
+            ->where('book_id', $bookId)
+            ->delete();
+    
+        if (!$deleted) {
+            return response()->json(['message' => 'not_found'], 404);
+        }
     
         return response()->json(null, 204);
     }

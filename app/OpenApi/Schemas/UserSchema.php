@@ -17,7 +17,11 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: "subscribed_until", type: "string", format: "date-time", nullable: true),
         new OA\Property(property: "avatar", type: "string", nullable: true),
         new OA\Property(property: "is_subscribed", type: "boolean"),
-        new OA\Property(property: "progress", ref: "#/components/schemas/Progress", nullable: true),
+        new OA\Property(
+            property: "progress",
+            type: "array",
+            items: new OA\Items(ref: "#/components/schemas/Progress")
+        ),
     ]
 )]
 class UserSchema {}

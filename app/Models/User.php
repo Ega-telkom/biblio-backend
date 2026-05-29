@@ -45,7 +45,7 @@ use Filament\Panel;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'password', 'role', 'avatar_url', 'subscribed_until', 'last_book_id', 'last_page'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar_url', 'subscribed_until'])]
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
@@ -102,23 +102,25 @@ class User extends Authenticatable implements FilamentUser
             && $this->subscribed_until->isFuture();
     }
     
-    public function getProgressAttribute(): ?array
+    public function readingProgress()
     {
-        if (!$this->last_book_id) return null;
+        return $this->hasMany(ReadingProgress::class)
+            ->orderByDesc('updated_at')
+            ->limit(10)
+            ->with('book');
+    }
     
-        return [
-            'last_page' => $this->last_page,
-            'book'      => $this->lastBook()->with('genre')->first(),
-        ];
+    public function getProgressAttribute(): array
+    {
+        return $this->readingProgress->map(fn ($p) => [
+            'last_page'  => $p->last_page,
+            'updated_at' => $p->updated_at,
+            'book'       => $p->book,
+        ])->toArray();
     }
     
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
-    }
-    
-    public function lastBook()
-    {
-        return $this->belongsTo(Book::class, 'last_book_id');
     }
 }
