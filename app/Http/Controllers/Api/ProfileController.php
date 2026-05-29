@@ -30,10 +30,12 @@ class ProfileController extends Controller
             ),
         ]
     )]
+    #---
     public function me(Request $request)
     {
         return response()->json($request->user());
     }
+    
     #---
     #[OA\Post(
         path: "/profile/avatar",

@@ -45,14 +45,22 @@ use Filament\Panel;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'password', 'role', 'avatar_url', 'subscribed_until'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar_url', 'subscribed_until', 'last_book_id', 'last_page'])]
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $appends = ['avatar', 'is_subscribed'];
+    protected $hidden = ['password', 'remember_token', 'last_book_id', 'last_page', 'avatar_url'];
+    
+    public function toArray()
+    {
+        $array = parent::toArray();
+        unset($array['last_book']);
+        return $array;
+    }
+    
+    protected $appends = ['avatar', 'is_subscribed', 'progress'];
     /**
     * Get the attributes that should be cast.
     *
@@ -94,8 +102,23 @@ class User extends Authenticatable implements FilamentUser
             && $this->subscribed_until->isFuture();
     }
     
+    public function getProgressAttribute(): ?array
+    {
+        if (!$this->last_book_id) return null;
+    
+        return [
+            'last_page' => $this->last_page,
+            'book'      => $this->lastBook()->with('genre')->first(),
+        ];
+    }
+    
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+    
+    public function lastBook()
+    {
+        return $this->belongsTo(Book::class, 'last_book_id');
     }
 }

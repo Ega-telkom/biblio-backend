@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\GenreController;
 use App\Http\Controllers\Api\ReadlistController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [ProfileController::class, 'me']);
     Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar']);
     Route::delete('/profile/avatar', [ProfileController::class, 'deleteAvatar']);
+    
+    Route::post('/progress', [ProgressController::class, 'upsert']);
+    Route::delete('/progress', [ProgressController::class, 'destroy']);
 
     Route::apiResource('/books', BookController::class)->only(['index', 'show']);
     Route::get('/genres/{genre}/books', [BookController::class, 'byGenre']);

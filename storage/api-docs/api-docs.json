@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Biblio API",
-        "description": "API untuk Biblio.\n- Repositori: [https://github.com/Ega-telkom/biblio-backend](https://github.com/Ega-telkom/biblio-backend) \n\n~ Dari kelompok 3\n",
+        "description": "API untuk Biblio. \n- Repositori: [https://github.com/Ega-telkom/biblio-backend](https://github.com/Ega-telkom/biblio-backend) \n        \n        \n ~ Dari kelompok 3\n        ",
         "version": "1.0.0"
     },
     "servers": [
@@ -646,6 +646,89 @@
                 ]
             }
         },
+        "/progress": {
+            "post": {
+                "tags": [
+                    "Progress"
+                ],
+                "summary": "Simpan atau update progress baca",
+                "operationId": "upsertProgress",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpsertProgressRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Progress"
+                ],
+                "summary": "Hapus progress baca",
+                "operationId": "deleteProgress",
+                "responses": {
+                    "204": {
+                        "description": "Deleted"
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiMessageResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/readlists": {
             "get": {
                 "tags": [
@@ -1158,6 +1241,19 @@
                 },
                 "type": "object"
             },
+            "Progress": {
+                "properties": {
+                    "last_page": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "book": {
+                        "$ref": "#/components/schemas/Book"
+                    }
+                },
+                "type": "object",
+                "nullable": true
+            },
             "ReadlistDetail": {
                 "properties": {
                     "id": {
@@ -1300,6 +1396,24 @@
                     "description": {
                         "type": "string",
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpsertProgressRequest": {
+                "required": [
+                    "book_id",
+                    "last_page"
+                ],
+                "properties": {
+                    "book_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 42
                     }
                 },
                 "type": "object"
@@ -1491,6 +1605,14 @@
                     },
                     "is_subscribed": {
                         "type": "boolean"
+                    },
+                    "progress": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Progress"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -1506,27 +1628,31 @@
     "tags": [
         {
             "name": "Auth",
-            "description": "Auth"
-        },
-        {
-            "name": "Books",
-            "description": "Books"
-        },
-        {
-            "name": "Genres",
-            "description": "Genres"
-        },
-        {
-            "name": "Payment",
-            "description": "Payment"
+            "description": "Autentikasi via Firebase"
         },
         {
             "name": "Profile",
-            "description": "Profile"
+            "description": "Profil user yang sedang login"
+        },
+        {
+            "name": "Books",
+            "description": "CRUD dan download buku"
+        },
+        {
+            "name": "Genres",
+            "description": "List dan detail genre"
+        },
+        {
+            "name": "Progress",
+            "description": "Progress baca user"
         },
         {
             "name": "Readlists",
-            "description": "Readlists"
+            "description": "Koleksi buku (mirip kaya )"
+        },
+        {
+            "name": "Payment",
+            "description": "Langganan via Midtrans"
         }
     ]
 }
