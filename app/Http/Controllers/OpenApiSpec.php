@@ -19,7 +19,7 @@ use OpenApi\Attributes as OA;
         new OA\Tag(name: "Books", description: "CRUD dan download buku"),
         new OA\Tag(name: "Genres", description: "List dan detail genre"),
         new OA\Tag(name: "Progress", description: "Progress baca user"),
-        new OA\Tag(name: "Readlists", description: "Koleksi buku (mirip kaya )"),
+        new OA\Tag(name: "Readlists", description: "Koleksi buku (mirip kaya playlist)"),
         new OA\Tag(name: "Payment", description: "Langganan via Midtrans"),
     ]
 )]
