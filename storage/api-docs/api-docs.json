@@ -1583,13 +1583,6 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "role": {
-                        "type": "string",
-                        "enum": [
-                            "user",
-                            "admin"
-                        ]
-                    },
                     "avatar_url": {
                         "type": "string",
                         "nullable": true

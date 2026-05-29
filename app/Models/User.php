@@ -51,7 +51,7 @@ class User extends Authenticatable implements FilamentUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
-    protected $hidden = ['password', 'remember_token', 'last_book_id', 'last_page', 'avatar_url'];
+    protected $hidden = ['password', 'remember_token', 'last_book_id', 'last_page', 'avatar_url', 'role'];
     
     public function toArray()
     {
