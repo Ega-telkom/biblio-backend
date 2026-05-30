@@ -54,7 +54,7 @@ return [
             'region'                  => env('AWS_DEFAULT_REGION'),
             'bucket'                  => env('AWS_BUCKET'),
             'endpoint'                => env('AWS_ENDPOINT'),     // http://minio:9000
-            'url'                     => env('AWS_URL'),          // https://biblio-cdn.duckdns.org/biblio (opsional)
+            'url'                     => env('AWS_URL_BIBLIO'),          // https://biblio-cdn.duckdns.org/biblio (opsional)
             'use_path_style_endpoint' => true,
             'throw'                   => true,                    // ganti false → true biar error ketahuan
         ],
